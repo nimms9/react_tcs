@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import {registerUser} from '../../redux/actions/authAction';
 
-const Register = (registerUser,isAuthenticated) => {
+const Register = ({registerUser,isAuthenticated}) => {
 
     const[formData,setFormData]=useState({username:'',email:'',password:'',password2:''})
 
@@ -18,9 +18,9 @@ const Register = (registerUser,isAuthenticated) => {
 
   const onSubmit=(e)=>{
     const newUser = {
-        username:this.state.username,
-        email:this.state.email,
-        password:this.state.password,
+        username:username,
+        email:email,
+        password:password,
         role:['user']
 
     };
