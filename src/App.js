@@ -8,7 +8,7 @@ import Sample from './components/layouts/Sample';
 import PostList from './components/layouts/PostList';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 // redux 
-import Provider from 'react-redux'
+import {Provider} from 'react-redux'
 import store from './redux/store/store'
 
 
