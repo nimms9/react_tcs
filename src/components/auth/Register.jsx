@@ -1,63 +1,69 @@
-import React, { Component } from 'react'
-import axios from 'axios';
+import React, { Component, useState } from 'react'
+import { Redirect} from 'react-router-dom';
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import {registerUser} from '../../redux/actions/authAction';
 
-export default class Register extends Component {
-    constructor(){
+const Register = (registerUser,isAuthenticated) => {
 
-        super();
-        this.state={
-            username:'',
-            email:'',
-            password:'',
-            password2:'',
-            role:'',
-            errors:{}
-        }
-        this.onChange=this.onChange.bind(this);
-        //We will bind this object with your event
-        this.onSubmit=this.onSubmit.bind(this);
-    }
-    onChange(e){
-        this.setState({[e.target.name]:e.target.value});
-        //when state of ur controller is changing then we are
-        //holding that changed value in state.
-    }
-    onSubmit(e){
-        const newUser = {
-            username:this.state.username,
-            email:this.state.email,
-            password:this.state.password,
-            role:['user']
+    const[formData,setFormData]=useState({username:'',email:'',password:'',password2:''})
 
-        };
-        e.preventDefault();
-        console.log("hello from submit");
-        console.log(JSON.stringify(this.state));
-        axios.post('http://localhost:9050/api/auth/signup',newUser)
-        .then(res=>console.log(JSON.stringify(res)))
-        .catch(err=>console.log(JSON.stringify(err)));
+    const {username,email,password,password2} = formData
+    const onChange=(e)=>{
+
+      setFormData({...formData,[e.target.name]:e.target.value})
+      //when state of ur controller is changing then we are
+      //holding that changed value in state.
+  }
+
+  const onSubmit=(e)=>{
+    const newUser = {
+        username:this.state.username,
+        email:this.state.email,
+        password:this.state.password,
+        role:['user']
+
+    };
+    e.preventDefault();
+    console.log('hello from submit');
+    console.log(JSON.stringify(formData));
+
+    if(password!==password2){
+      console.log('problem')
     }
-    render() {
-        return (
-            <div className="register">
+    else{
+
+      //action
+      registerUser(formData)
+
+
+    }
+
+  };
+  if(isAuthenticated){
+    return <Redirect to='/dashboard'></Redirect>
+  }
+
+  return (
+    <div className="register">
         <div className="container">
         <div className="row">
             <div className="col-md-8 m-auto">
                 <h1 className="display-4 text-center">Sign Up</h1>
                 <p className="lead text-center">Create your DevConnector account</p>
-                <form onSubmit={this.onSubmit}>
+                <form onSubmit={onSubmit}>
                     <div className="form-group">
-                    <input type="text" className="form-control form-control-lg" placeholder="Name" name="username" required value={this.state.username}  onChange={this.onChange} />
+                    <input type="text" className="form-control form-control-lg" placeholder="Name" name="username" required value={username}  onChange={onChange} />
             </div>
             <div className="form-group">
-              <input type="email" className="form-control form-control-lg" placeholder="Email Address" name="email" value={this.state.email} onChange={this.onChange} />
+              <input type="email" className="form-control form-control-lg" placeholder="Email Address" name="email" value={email} onChange={onChange} />
               <small className="form-text text-muted">This site uses Gravatar so if you want a profile image, use a Gravatar email</small>
             </div>
             <div className="form-group">
-              <input type="password" className="form-control form-control-lg" placeholder="Password" name="password" value={this.state.password} onChange={this.onChange} />
+              <input type="password" className="form-control form-control-lg" placeholder="Password" name="password" value={password} onChange={onChange} />
             </div>
             <div className="form-group">
-              <input type="password" className="form-control form-control-lg" placeholder="Confirm Password" name="password2" value={this.state.password2} onChange={this.onChange} />
+              <input type="password" className="form-control form-control-lg" placeholder="Confirm Password" name="password2" value={password2} onChange={onChange} />
             </div>
             <input type="submit" className="btn btn-info btn-block mt-4" />
           </form>
@@ -65,6 +71,21 @@ export default class Register extends Component {
       </div>
     </div>
   </div>
-        )
-    }
+  )
 }
+
+Register.propTypes = {
+  isAuthenticated: PropTypes.bool.isRequired,
+  registerUser:PropTypes.func.isRequired
+}
+
+const mapStateToProps = (state) => ({
+    isAuthenticated: state.auth.isAuthenticated
+
+})
+
+const mapDispatchToProps = {
+  
+}
+
+export default connect(mapStateToProps, {registerUser})(Register)

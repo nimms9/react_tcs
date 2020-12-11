@@ -13,7 +13,7 @@ export default (state = initialState, action) => {
 
     case REGISTER_SUCCESS:
         return { ...state, ...payload, 
-        isAuthenticated:true}
+        isAuthenticated:false}
        // loading:false }
 
     default:
